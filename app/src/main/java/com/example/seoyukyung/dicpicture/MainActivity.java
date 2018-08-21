@@ -33,17 +33,27 @@ import com.google.api.services.vision.v1.model.BatchAnnotateImagesResponse;
 import com.google.api.services.vision.v1.model.EntityAnnotation;
 import com.google.api.services.vision.v1.model.Feature;
 import com.google.api.services.vision.v1.model.Image;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
-    private static final String CLOUD_VISION_API_KEY = "";
+    private static final String CLOUD_VISION_API_KEY = "AIzaSyC9ucj6c1SJRSzRERLiheBrElqYfU76K_k";
     public static final String FILE_NAME = "temp.jpg";
     private static final String ANDROID_CERT_HEADER = "X-Android-Cert";
     private static final String ANDROID_PACKAGE_HEADER = "X-Android-Package";
@@ -56,8 +66,10 @@ public class MainActivity extends AppCompatActivity {
     public static final int CAMERA_PERMISSIONS_REQUEST = 2;
     public static final int CAMERA_IMAGE_REQUEST = 3;
 
-    private TextView mImageDetails;
+    private static TextView mImageDetails;
     private ImageView mMainImage;
+
+    private static StringBuilder sb = new StringBuilder("");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -261,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void callCloudVision(final Bitmap bitmap) {
+
         // Switch text to loading
         mImageDetails.setText(R.string.loading_message);
 
@@ -268,6 +281,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             AsyncTask<Object, Void, String> labelDetectionTask = new LableDetectionTask(this, prepareAnnotationRequest(bitmap));
             labelDetectionTask.execute();
+
         } catch (IOException e) {
             Log.d(TAG, "failed to make API request because of other IOException " +
                     e.getMessage());
@@ -295,18 +309,109 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static String convertResponseToString(BatchAnnotateImagesResponse response) {
-        StringBuilder message = new StringBuilder("I found these things:\n\n");
+        //StringBuilder message = new StringBuilder("");
 
         List<EntityAnnotation> labels = response.getResponses().get(0).getLabelAnnotations();
         if (labels != null) {
             for (EntityAnnotation label : labels) {
-                message.append(String.format(Locale.US, "%s", label.getDescription()));
-                message.append("\n");
+                PapagoTranslateTask papagoTask = new PapagoTranslateTask();
+                papagoTask.execute(label.getDescription());
+                //message.append(papagoTask.execute(label.getDescription()));
+                //message.append("\n");
             }
+
+
         } else {
-            message.append("nothing");
+            //message.append("nothing");
         }
 
-        return message.toString();
+        //return message.toString();
+        return null;
     }
+
+    private static class PapagoTranslateTask extends AsyncTask<String, Void, String> {
+
+        public String translateText;
+
+        String clientId = "ejwTdm8D6fFsu5imaXmr";
+        String clientSecret = "uQrcsvQPft";
+
+        String sourceLang = "en";
+        String destinationLang = "ko";
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String totranText = strings[0];
+
+            try {
+                String text = URLEncoder.encode(totranText, "UTF-8");
+                String apiURL =  "https://openapi.naver.com/v1/language/translate";
+                URL url = new URL(apiURL);
+                HttpURLConnection con = (HttpURLConnection)url.openConnection();
+                con.setRequestMethod("POST");
+                con.setRequestProperty("X-Naver-Client-Id", clientId);
+                con.setRequestProperty("X-Naver-Client-Secret", clientSecret);
+                // post request
+                String postParams = "source="+sourceLang+"&target="+destinationLang+"&text=" + text;
+                con.setDoOutput(true);
+                DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+                wr.writeBytes(postParams);
+                wr.flush();
+                wr.close();
+                int responseCode = con.getResponseCode();
+                BufferedReader br;
+                if(responseCode==200) { // 정상 호출
+                    br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                } else {  // 에러 발생
+                    br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+                }
+                String inputLine;
+                StringBuffer response = new StringBuffer();
+                while ((inputLine = br.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                br.close();
+
+                return response.toString();
+            } catch(Exception e) {
+                Log.d("error", e.getMessage());
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            Gson gson = new GsonBuilder().create();
+            JsonParser parser = new JsonParser();
+            JsonElement rootObj = parser.parse(s.toString())
+                    .getAsJsonObject().get("message")
+                    .getAsJsonObject().get("result");
+
+            TranslatedItem items = gson.fromJson(rootObj.toString(), TranslatedItem.class);
+
+            sb.append(items.getTranslatedText() + "\n");
+            mImageDetails.setText(sb);
+        }
+
+        private class TranslatedItem {
+            String translatedText;
+
+            public String getTranslatedText() {
+                return translatedText;
+            }
+        }
+
+
+
+    }
+
+
 }
