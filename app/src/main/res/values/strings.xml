@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">DicPicture</string>
     <string name="icon">icon</string>
+    <string name="camera">camera</string>
     <string name="image_details_header">Details:</string>
     <string name="image_preview_header">Preview:</string>
     <string name="loading_message">Uploading image. Please wait.</string>
