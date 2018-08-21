@@ -53,7 +53,7 @@ import java.util.List;
 import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
-    private static final String CLOUD_VISION_API_KEY = "AIzaSyC9ucj6c1SJRSzRERLiheBrElqYfU76K_k";
+    private static final String CLOUD_VISION_API_KEY = "";
     public static final String FILE_NAME = "temp.jpg";
     private static final String ANDROID_CERT_HEADER = "X-Android-Cert";
     private static final String ANDROID_PACKAGE_HEADER = "X-Android-Package";
@@ -333,8 +333,8 @@ public class MainActivity extends AppCompatActivity {
 
         public String translateText;
 
-        String clientId = "ejwTdm8D6fFsu5imaXmr";
-        String clientSecret = "uQrcsvQPft";
+        String clientId = "";
+        String clientSecret = "";
 
         String sourceLang = "en";
         String destinationLang = "ko";
