@@ -74,8 +74,8 @@ public class MainActivity extends AppCompatActivity {
             builder.create().show();
         });
 
-        mImageDetails = findViewById(R.id.image_details);
-        mMainImage = findViewById(R.id.main_image);
+        mImageDetails = findViewById(R.id.image_details2);
+        mMainImage = findViewById(R.id.main_image2);
     }
 
     public void startGalleryChooser() {
@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             MainActivity activity = mActivityWeakReference.get();
             if (activity != null && !activity.isFinishing()) {
-                TextView imageDetail = activity.findViewById(R.id.image_details);
+                TextView imageDetail = activity.findViewById(R.id.image_details2);
                 imageDetail.setText(result);
             }
         }
