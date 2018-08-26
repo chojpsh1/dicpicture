@@ -57,7 +57,7 @@ import java.util.List;
 import java.util.Locale;
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
-    private static final String CLOUD_VISION_API_KEY = "AIzaSyD_NGKmBcL37cg9ivSMUt0BWN8LiZb-n5A";
+    private static final String CLOUD_VISION_API_KEY = "";
     public static final String FILE_NAME = "temp.jpg";
     private static final String ANDROID_CERT_HEADER = "X-Android-Cert";
     private static final String ANDROID_PACKAGE_HEADER = "X-Android-Package";
@@ -427,8 +427,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         public String translateText;
 
-        String clientId = "ejwTdm8D6fFsu5imaXmr";
-        String clientSecret = "QfVw0yoIFL";
+        String clientId = "";
+        String clientSecret = "";
 
         //String sourceLang = "en";
         //String destinationLang = "ko";
