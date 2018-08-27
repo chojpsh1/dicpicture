@@ -14,8 +14,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +55,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     private static final String CLOUD_VISION_API_KEY = "";
     public static final String FILE_NAME = "temp.jpg";
@@ -69,12 +73,39 @@ public class MainActivity extends AppCompatActivity {
     private static TextView mImageDetails;
     private ImageView mMainImage;
 
+    //private TextView sSelectSourceLang;
+    private Spinner sSourceLangSpinner;
+    private Spinner dDestLangSpinner;
+    private String[] sSourceLangList;
+    private String[] dDestLangList;
+
+    private static String sSelectSourceLang;
+    private static String sSelectDestLang;
+
     private static StringBuilder sb = new StringBuilder("");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //sSelectSourceLang = (TextView)findViewById(R.id.selectSourceLang);
+        sSourceLangSpinner = (Spinner)findViewById(R.id.sourceLangSpinner);
+        sSourceLangSpinner.setOnItemSelectedListener(this);
+        dDestLangSpinner = (Spinner)findViewById(R.id.destLangSpinner);
+        dDestLangSpinner.setOnItemSelectedListener(this);
+
+        sSourceLangList = new String[]{"Select Study Language", "Korean", "English", "Japanese", "Chinese(Simplified)", "Chinese(Traditional)"};
+        dDestLangList = new String[]{"Select Native Language", "Korean", "English", "Japanese", "Chinese(Simplified)", "Chinese(Traditional)"};
+
+        ArrayAdapter<String> arAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sSourceLangList);
+        arAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        ArrayAdapter<String> arAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dDestLangList);
+        arAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        sSourceLangSpinner.setAdapter(arAdapter);
+        dDestLangSpinner.setAdapter(arAdapter2);
 
         ImageButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
@@ -89,6 +120,69 @@ public class MainActivity extends AppCompatActivity {
         mImageDetails = findViewById(R.id.image_details2);
         mMainImage = findViewById(R.id.main_image2);
     }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        //sSelectSourceLang = sSourceLangList[i];
+        int tmp = adapterView.getId();
+        String tmpStr;
+
+        if(tmp == 2131165303) {
+            switch (i) {
+                case 0:
+                    sSelectSourceLang = "";
+                    break;
+                case 1:
+                    sSelectSourceLang = "ko";
+                    break;
+                case 2:
+                    sSelectSourceLang = "en";
+                    break;
+                case 3:
+                    sSelectSourceLang = "ja";
+                    break;
+                case 4:
+                    sSelectSourceLang = "zh-CN";
+                    break;
+                case 5:
+                    sSelectSourceLang = "zh-TW";
+                    break;
+            }
+        } else if(tmp == 2131165234) {
+            switch (i) {
+                case 0:
+                    sSelectDestLang = "";
+                    break;
+                case 1:
+                    sSelectDestLang = "ko";
+                    break;
+                case 2:
+                    sSelectDestLang = "en";
+                    break;
+                case 3:
+                    sSelectDestLang = "ja";
+                    break;
+                case 4:
+                    sSelectDestLang = "zh-CN";
+                    break;
+                case 5:
+                    sSelectDestLang = "zh-TW";
+                    break;
+            }
+        }
+
+//        sSelectSourceLang.setText(sSourceLangList[i]);
+//        if(sSelectSourceLang.getText().toString().equals("Select Study Language")) {
+//            sSelectSourceLang.setText("");
+//        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+        sSelectSourceLang = "";
+        //sSelectSourceLang.setText("");
+    }
+
 
     public void startGalleryChooser() {
         if (PermissionUtils.requestPermission(this, GALLERY_PERMISSIONS_REQUEST, Manifest.permission.READ_EXTERNAL_STORAGE)) {
@@ -336,8 +430,11 @@ public class MainActivity extends AppCompatActivity {
         String clientId = "";
         String clientSecret = "";
 
-        String sourceLang = "en";
-        String destinationLang = "ko";
+        //String sourceLang = "en";
+        //String destinationLang = "ko";
+
+        String sourceLang = sSelectSourceLang;
+        String destinationLang = sSelectDestLang;
 
         @Override
         protected void onPreExecute() {
