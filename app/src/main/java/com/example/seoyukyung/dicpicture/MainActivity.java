@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private static TextView sSourceLangTextView;
     private static TextView dDesLangTextView;
+    private static TextView netiveTextView;
 
     private static String saveForSourceLang;
 
@@ -123,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
 
         mImageDetails = findViewById(R.id.image_details2);
+        netiveTextView = findViewById(R.id.native_textview);
         mMainImage = findViewById(R.id.main_image2);
 
         sSourceLangTextView = findViewById(R.id.study_textview);
@@ -525,7 +527,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             TranslatedItem items = gson.fromJson(rootObj.toString(), TranslatedItem.class);
 
             sb.append(items.getTranslatedText() + "\n");
-            mImageDetails.setText(sb);
+            mImageDetails.setText("");
+            netiveTextView.setText(sb);
         }
 
         private class TranslatedItem {

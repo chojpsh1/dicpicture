@@ -12,32 +12,40 @@
         android:layout_width="269dp"
         android:layout_height="200dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
         android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/fab"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image_details2" />
 
-    <TextView
-        android:id="@+id/study_textview"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
-        android:text="test1"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/native_textview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="200dp"
-        android:layout_marginStart="200dp"
-        android:layout_marginTop="120dp"
-        android:text="test2"
+        app:layout_constraintBottom_toTopOf="@+id/image_details2"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/test1">
 
+        <TextView
+            android:id="@+id/study_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="test1"
+            android:textStyle="bold"
+            android:textSize="30dp"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/native_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="test2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
     <TextView
         android:id="@+id/image_details2"
         android:layout_width="wrap_content"
@@ -56,23 +64,22 @@
     <ImageButton
         android:id="@+id/fab"
         style="@style/Widget.AppCompat.ImageButton"
-        android:layout_width="269dp"
-        android:layout_height="393dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="172dp"
+        android:layout_height="71dp"
+        android:layout_marginBottom="36dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_details2"
         app:srcCompat="@drawable/camera" />
 
     <LinearLayout
+        android:id="@+id/test1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <Spinner
             android:id="@+id/sourceLangSpinner"
