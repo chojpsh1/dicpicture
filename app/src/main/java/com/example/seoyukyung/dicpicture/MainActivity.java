@@ -73,6 +73,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static TextView mImageDetails;
     private ImageView mMainImage;
 
+    private static TextView sSourceLangTextView;
+    private static TextView dDesLangTextView;
+
+    private static String saveForSourceLang;
+
     //private TextView sSelectSourceLang;
     private Spinner sSourceLangSpinner;
     private Spinner dDestLangSpinner;
@@ -119,6 +124,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         mImageDetails = findViewById(R.id.image_details2);
         mMainImage = findViewById(R.id.main_image2);
+
+        sSourceLangTextView = findViewById(R.id.study_textview);
+        dDesLangTextView = findViewById(R.id.native_textview);
     }
 
     @Override
@@ -127,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         int tmp = adapterView.getId();
         String tmpStr;
 
-        if(tmp == 2131165303) {
+        if(tmp == 2131165303 || tmp == 2131165304) {
             switch (i) {
                 case 0:
                     sSelectSourceLang = "";
@@ -360,9 +368,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         protected void onPostExecute(String result) {
             MainActivity activity = mActivityWeakReference.get();
             if (activity != null && !activity.isFinishing()) {
-                TextView imageDetail = activity.findViewById(R.id.image_details2);
-                imageDetail.setText(result);
+                TextView nativeDetail = activity.findViewById(R.id.native_textview);
+                nativeDetail.setText(result);
+
+                sSelectDestLang = sSelectSourceLang;
+
+                if(sSelectSourceLang == "en") {
+                    TextView studyDetail = activity.findViewById(R.id.study_textview);
+                    studyDetail.setText(saveForSourceLang);
+                } else {
+                    TextView studyDetail = activity.findViewById(R.id.study_textview);
+                    PapagoTranslateTask papagoTask = new PapagoTranslateTask();
+                    Object tmp = papagoTask.execute(saveForSourceLang);
+                    studyDetail.setText((String)tmp);
+                }
             }
+
+
         }
     }
 
@@ -407,12 +429,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         List<EntityAnnotation> labels = response.getResponses().get(0).getLabelAnnotations();
         if (labels != null) {
+
+            PapagoTranslateTask papagoTask = new PapagoTranslateTask();
+            saveForSourceLang = labels.get(0).getDescription();
+            papagoTask.execute(labels.get(0).getDescription());
+
+            /*
             for (EntityAnnotation label : labels) {
                 PapagoTranslateTask papagoTask = new PapagoTranslateTask();
+                saveForSourceLang = label.getDescription();
                 papagoTask.execute(label.getDescription());
                 //message.append(papagoTask.execute(label.getDescription()));
                 //message.append("\n");
             }
+            */
 
 
         } else {
@@ -430,10 +460,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String clientId = "";
         String clientSecret = "";
 
-        //String sourceLang = "en";
+        String sourceLang = "en";
         //String destinationLang = "ko";
 
-        String sourceLang = sSelectSourceLang;
+        //String sourceLang = sSelectSourceLang;
         String destinationLang = sSelectDestLang;
 
         @Override
