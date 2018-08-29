@@ -20,6 +20,25 @@
         app:layout_constraintTop_toBottomOf="@+id/image_details2" />
 
     <TextView
+        android:id="@+id/study_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
+        android:text="test1"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/native_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="200dp"
+        android:layout_marginStart="200dp"
+        android:layout_marginTop="120dp"
+        android:text="test2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/image_details2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
