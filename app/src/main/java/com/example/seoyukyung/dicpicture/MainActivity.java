@@ -75,15 +75,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private static TextView sSourceLangTextView;
     private static TextView dDesLangTextView;
-    private static TextView netiveTextView;
 
     private static String saveForSourceLang;
 
     //private TextView sSelectSourceLang;
     private Spinner sSourceLangSpinner;
-    private Spinner dDestLangSpinner;
     private String[] sSourceLangList;
-    private String[] dDestLangList;
 
     private static String sSelectSourceLang;
     private static String sSelectDestLang;
@@ -98,20 +95,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //sSelectSourceLang = (TextView)findViewById(R.id.selectSourceLang);
         sSourceLangSpinner = (Spinner)findViewById(R.id.sourceLangSpinner);
         sSourceLangSpinner.setOnItemSelectedListener(this);
-        dDestLangSpinner = (Spinner)findViewById(R.id.destLangSpinner);
-        dDestLangSpinner.setOnItemSelectedListener(this);
 
-        sSourceLangList = new String[]{"Select Study Language", "Korean", "English", "Japanese", "Chinese(Simplified)", "Chinese(Traditional)"};
-        dDestLangList = new String[]{"Select Native Language", "Korean", "English", "Japanese", "Chinese(Simplified)", "Chinese(Traditional)"};
+        sSourceLangList = new String[]{"Select Study Language", "Korean", "English"};
 
         ArrayAdapter<String> arAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sSourceLangList);
         arAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        ArrayAdapter<String> arAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dDestLangList);
-        arAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         sSourceLangSpinner.setAdapter(arAdapter);
-        dDestLangSpinner.setAdapter(arAdapter2);
 
         ImageButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
@@ -124,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
 
         mImageDetails = findViewById(R.id.image_details2);
-        netiveTextView = findViewById(R.id.native_textview);
         mMainImage = findViewById(R.id.main_image2);
 
         sSourceLangTextView = findViewById(R.id.study_textview);
@@ -137,48 +127,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         int tmp = adapterView.getId();
         String tmpStr;
 
-        if(tmp == 2131165303 || tmp == 2131165304) {
-            switch (i) {
-                case 0:
-                    sSelectSourceLang = "";
-                    break;
-                case 1:
-                    sSelectSourceLang = "ko";
-                    break;
-                case 2:
-                    sSelectSourceLang = "en";
-                    break;
-                case 3:
-                    sSelectSourceLang = "ja";
-                    break;
-                case 4:
-                    sSelectSourceLang = "zh-CN";
-                    break;
-                case 5:
-                    sSelectSourceLang = "zh-TW";
-                    break;
-            }
-        } else if(tmp == 2131165234) {
-            switch (i) {
-                case 0:
-                    sSelectDestLang = "";
-                    break;
-                case 1:
-                    sSelectDestLang = "ko";
-                    break;
-                case 2:
-                    sSelectDestLang = "en";
-                    break;
-                case 3:
-                    sSelectDestLang = "ja";
-                    break;
-                case 4:
-                    sSelectDestLang = "zh-CN";
-                    break;
-                case 5:
-                    sSelectDestLang = "zh-TW";
-                    break;
-            }
+        switch (i) {
+            case 0:
+                sSelectSourceLang = "";
+                break;
+            case 1:
+                sSelectSourceLang = "ko";
+                break;
+            case 2:
+                sSelectSourceLang = "en";
+                break;
         }
 
 //        sSelectSourceLang.setText(sSourceLangList[i]);
@@ -378,7 +336,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if(sSelectSourceLang == "en") {
                     TextView studyDetail = activity.findViewById(R.id.study_textview);
                     studyDetail.setText(saveForSourceLang);
-                } else {
+                } else if(sSelectSourceLang == "ko"){
+                    TextView studyDetail = activity.findViewById(R.id.native_textview);
+                    studyDetail.setText(saveForSourceLang);
+                }else {
                     TextView studyDetail = activity.findViewById(R.id.study_textview);
                     PapagoTranslateTask papagoTask = new PapagoTranslateTask();
                     Object tmp = papagoTask.execute(saveForSourceLang);
@@ -465,8 +426,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String sourceLang = "en";
         //String destinationLang = "ko";
 
-        //String sourceLang = sSelectSourceLang;
-        String destinationLang = sSelectDestLang;
+        //String sourceLang = sSelectSourceLang; sSelectDestLang
+        String destinationLang = "ko";
+
 
         @Override
         protected void onPreExecute() {
@@ -526,9 +488,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             TranslatedItem items = gson.fromJson(rootObj.toString(), TranslatedItem.class);
 
+            //stringbuffer clear
+            sb.setLength(0);
             sb.append(items.getTranslatedText() + "\n");
             mImageDetails.setText("");
-            netiveTextView.setText(sb);
+
+            if(sSelectSourceLang == "en") {
+                dDesLangTextView.setText(sb);
+            } else if(sSelectSourceLang == "ko") {
+                sSourceLangTextView.setText(sb);
+            }
+
+
         }
 
         private class TranslatedItem {
@@ -538,10 +509,5 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 return translatedText;
             }
         }
-
-
-
     }
-
-
 }
